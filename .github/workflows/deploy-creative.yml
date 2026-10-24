@@ -1,0 +1,73 @@
+name: Deploy Creative Nuxt SSR
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: creative-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Nuxt SSR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Nuxt
+        run: npm run build
+
+      - name: Verify SSR output
+        run: test -f .output/server/index.mjs
+
+      - name: Package SSR output
+        run: tar -czf creative-ssr.tar.gz -C .output .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: creative-ssr
+          path: creative-ssr.tar.gz
+          retention-days: 1
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy HOMELAB
+    needs: build
+    runs-on:
+      - self-hosted
+      - linux
+      - creative-ssr
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: creative-ssr
+          path: deploy-package
+
+      - name: Deploy Creative
+        run: |
+          sudo -n /usr/local/sbin/deploy-creative-ssr \
+            "$GITHUB_WORKSPACE/deploy-package/creative-ssr.tar.gz"
+
+      - name: Cleanup downloaded artifact
+        if: always()
+        run: rm -rf -- "$GITHUB_WORKSPACE/deploy-package"
