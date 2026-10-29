@@ -43,6 +43,7 @@ jobs:
         run: |
           test -f .output/server/index.mjs
           npm run verify:production-runtime-config
+          npm run verify:seo
 
       - name: Package SSR output
         run: tar -czf creative-ssr.tar.gz -C .output .

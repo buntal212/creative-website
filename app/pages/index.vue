@@ -36,12 +36,24 @@ const { data: catalogCategories } = await useFetch<CatalogCategory[]>('/api/cata
   default: () => [],
 })
 const categories = computed(() => catalogCategories.value || [])
+const config = useRuntimeConfig()
+const canonicalUrl = config.public.siteUrl.replace(/\/$/, '') + '/'
 
 useSeoMeta({
   title: 'CREATIVE | Custom Jersey Printing Premium',
   description: 'Pesan jersey custom printing untuk futsal, sepak bola, esports, basket, sekolah dan komunitas. Desain bebas, bahan premium, dan proses mudah.',
   ogTitle: 'CREATIVE - Desain Bebas, Kualitas Premium',
   ogDescription: 'Jersey custom untuk tim dan komunitas Anda.',
+  ogType: 'website',
+  ogUrl: canonicalUrl,
+  ogSiteName: 'CREATIVE Custom Apparel',
+  twitterCard: 'summary',
+  twitterTitle: 'CREATIVE - Desain Bebas, Kualitas Premium',
+  twitterDescription: 'Jersey custom untuk tim dan komunitas Anda.',
+})
+
+useHead({
+  link: [{ key: 'canonical', rel: 'canonical', href: canonicalUrl }],
 })
 </script>
 

@@ -22,6 +22,29 @@ export default defineNuxtConfig({
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || defaults.siteUrl,
     },
   },
+  nitro: {
+    // Pertahankan kontrak NUXT_* untuk override runtime pada EnvironmentFile systemd.
+    envPrefix: 'NUXT_',
+  },
   css: ['~/assets/css/main.css'],
-  app: { head: { htmlAttrs: { lang: 'id' }, title: 'JERSEYKU | Custom Jersey Printing', meta: [{ name: 'description', content: 'Jersey custom printing premium untuk futsal, sepak bola, esports, basket dan komunitas. Konsultasi desain dan pesan jersey tim Anda.' }] } }
+  routeRules: {
+    '/api/**': {
+      headers: { 'X-Robots-Tag': 'noindex, nofollow, noarchive' },
+    },
+    '/admin/**': {
+      headers: { 'X-Robots-Tag': 'noindex, nofollow, noarchive' },
+    },
+  },
+  app: {
+    head: {
+      htmlAttrs: { lang: 'id' },
+      title: 'CREATIVE Custom Apparel',
+      meta: [
+        {
+          name: 'description',
+          content: 'Jersey custom printing premium untuk futsal, sepak bola, esports, basket, sekolah, dan komunitas.',
+        },
+      ],
+    },
+  },
 })

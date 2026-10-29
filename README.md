@@ -39,6 +39,11 @@ Setelah build, jalankan verifikasi runtime berikut:
 
 ```bash
 npm run verify:production-runtime-config
+npm run verify:seo
 ```
+
+Sitemap dinamis tersedia pada `/sitemap.xml`. Ia memuat halaman beranda dan seluruh
+produk aktif dari API katalog. `robots.txt` menyertakan sitemap tersebut serta memblokir
+perayapan endpoint internal API dan admin.
 
 WhatsApp number is a placeholder. Change it in `app/pages/index.vue`, `app/components/ProductCard.vue`, `app/components/AppHeader.vue`, and `app/components/AppFooter.vue` before launch. Product names/prices are sample data.

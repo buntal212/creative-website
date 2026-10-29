@@ -10,7 +10,7 @@ export default defineNitroPlugin(() => {
 
   // appEnvironment terbawa dari build; NODE_ENV menutup kemungkinan
   // EnvironmentFile yang salah menurunkan mode aplikasi ke development.
-  const isProduction = config.appEnvironment === 'production' || process.env.NODE_ENV === 'production'
+  const isProduction = config.appEnvironment === 'production' || process.env['NODE_ENV'] === 'production'
 
   if (!isProduction) {
     return

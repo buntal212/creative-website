@@ -9,6 +9,7 @@ interface ProductImage {
 interface ProductDetail {
   name: string
   slug: string
+  sku?: string | null
   description?: string | null
   price: number | string
   stock: number
@@ -45,7 +46,8 @@ const changeImage = (direction: 1 | -1) => {
 const siteUrl = config.public.siteUrl.replace(/\/$/, '')
 const canonicalUrl = `${siteUrl}/produk/${product.slug}`
 const description = product.description?.trim() || `Informasi lengkap ${product.name} dari CREATIVE Custom Apparel.`
-const primaryImage = product.thumbnail?.url || product.images[0]?.url
+const productImages = product.images.map((image) => image.url).filter(Boolean)
+const primaryImage = product.thumbnail?.url || productImages[0]
 
 const rupiah = (price: number | string) =>
   new Intl.NumberFormat('id-ID', {
@@ -63,34 +65,40 @@ useSeoMeta({
   ogDescription: description,
   ogType: 'product',
   ogUrl: canonicalUrl,
-  ogImage: primaryImage,
+  ogImage: primaryImage || undefined,
+  ogSiteName: 'CREATIVE Custom Apparel',
   twitterCard: 'summary_large_image',
   twitterTitle: `${product.name} | CREATIVE Custom Apparel`,
   twitterDescription: description,
   twitterImage: primaryImage,
 })
 
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  description,
+  ...(productImages.length ? { image: productImages } : {}),
+  ...(product.sku ? { sku: product.sku } : {}),
+  brand: { '@type': 'Brand', name: 'CREATIVE Custom Apparel' },
+  ...(product.category?.name ? { category: product.category.name } : {}),
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'IDR',
+    price: Number(product.price),
+    availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    itemCondition: 'https://schema.org/NewCondition',
+    url: canonicalUrl,
+  },
+}
+
 useHead({
-  link: [{ rel: 'canonical', href: canonicalUrl }],
+  link: [{ key: 'canonical', rel: 'canonical', href: canonicalUrl }],
   script: [
     {
+      key: 'ld-product',
       type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        name: product.name,
-        description,
-        image: product.images.map((image) => image.url),
-        sku: product.slug,
-        category: product.category?.name,
-        offers: {
-          '@type': 'Offer',
-          priceCurrency: 'IDR',
-          price: Number(product.price),
-          availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-          url: canonicalUrl,
-        },
-      }),
+      children: JSON.stringify(productSchema),
     },
   ],
 })
