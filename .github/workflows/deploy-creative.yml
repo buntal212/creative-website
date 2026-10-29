@@ -17,6 +17,11 @@ jobs:
   build:
     name: Build Nuxt SSR
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
+      NUXT_APP_ENVIRONMENT: production
+      NUXT_CREATIVE_API_BASE: https://api.creative-prob.my.id/api
+      NUXT_PUBLIC_SITE_URL: https://creative-prob.my.id
 
     steps:
       - name: Checkout
@@ -35,7 +40,9 @@ jobs:
         run: npm run build
 
       - name: Verify SSR output
-        run: test -f .output/server/index.mjs
+        run: |
+          test -f .output/server/index.mjs
+          npm run verify:production-runtime-config
 
       - name: Package SSR output
         run: tar -czf creative-ssr.tar.gz -C .output .
