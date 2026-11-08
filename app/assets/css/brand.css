@@ -1,0 +1,23 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.brand-text {
+  display: inline-block;
+}
+
+.brand-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+
+@media (max-width: 800px) {
+  .brand-logo {
+    width: 48px;
+    height: 48px;
+  }
+}

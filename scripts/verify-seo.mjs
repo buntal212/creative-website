@@ -147,8 +147,10 @@ try {
 
   const home = await responseText('/')
   assertCanonical(home.body, 'https://creative-prob.my.id/', 'Canonical beranda')
-  assertIncludes(home.body, 'CREATIVE | Custom Jersey Printing Premium', 'Title beranda')
-  assertIncludes(home.body, '"@type":"Organization"', 'Structured data Organization')
+  assertIncludes(home.body, 'Jersey Custom Probolinggo | CREATIVE Custom Apparel', 'Title beranda')
+  assertIncludes(home.body, 'Jersey custom printing Probolinggo', 'Deskripsi SEO lokal beranda')
+  assertIncludes(home.body, '"LocalBusiness"', 'Structured data bisnis lokal')
+  assertIncludes(home.body, '"Probolinggo"', 'Structured data Probolinggo')
 
   const detail = await responseText(`/produk/${product.slug}`)
   assertCanonical(detail.body, `https://creative-prob.my.id/produk/${product.slug}`, 'Canonical produk')

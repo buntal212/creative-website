@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     // Pertahankan kontrak NUXT_* untuk override runtime pada EnvironmentFile systemd.
     envPrefix: 'NUXT_',
   },
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/brand.css'],
   routeRules: {
     '/api/**': {
       headers: { 'X-Robots-Tag': 'noindex, nofollow, noarchive' },
@@ -44,6 +44,9 @@ export default defineNuxtConfig({
           name: 'description',
           content: 'Jersey custom printing premium untuk futsal, sepak bola, esports, basket, sekolah, dan komunitas.',
         },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/images/logo-creative.png' },
       ],
     },
   },
