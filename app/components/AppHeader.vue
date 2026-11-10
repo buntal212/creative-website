@@ -7,7 +7,6 @@ const links = [
   { label: "Galeri", href: "#galeri" },
   { label: "Tentang Kami", href: "#tentang" },
   { label: "Kontak", href: "#kontak" },
-  { label: "Media Sosial", href: "/medsos" },
 ];
 const wa =
   "https://wa.me/6282334148314?text=" +

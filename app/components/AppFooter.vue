@@ -5,9 +5,19 @@ interface SiteContact {
   phone: string;
 }
 
+interface SocialMedia {
+  id: number;
+  name: string;
+  url: string;
+}
+
 const { data: contacts } = await useFetch<SiteContact[]>("/api/site/contact", {
   default: () => [],
 });
+const { data: socialMedia } = await useFetch<SocialMedia[]>(
+  "/api/site/social-media",
+  { default: () => [] },
+);
 
 function phoneUrl(phone: string) {
   return `tel:${phone.replace(/[^+\d]/g, "")}`;
@@ -40,7 +50,6 @@ function phoneUrl(phone: string) {
         <a href="#produk">Katalog Produk</a>
         <a href="#custom">Custom Jersey</a>
         <a href="#galeri">Galeri Produksi</a>
-        <a href="/medsos">Media Sosial</a>
       </div>
       <div class="contact-section">
         <h3>Hubungi Kami</h3>
@@ -58,6 +67,17 @@ function phoneUrl(phone: string) {
         <p v-else class="contact-empty">
           Informasi kontak akan segera tersedia.
         </p>
+        <div v-if="socialMedia.length" class="social-links">
+          <h3>Media Sosial</h3>
+          <a
+            v-for="item in socialMedia"
+            :key="item.id"
+            :href="item.url"
+            target="_blank"
+            rel="noopener"
+            >{{ item.name }} ↗</a
+          >
+        </div>
       </div>
       <div class="location-map">
         <h3>Lokasi Creative Probolinggo</h3>
@@ -102,6 +122,20 @@ function phoneUrl(phone: string) {
 }
 .contact-empty {
   margin-top: 0;
+}
+
+.social-links {
+  margin-top: 24px;
+}
+
+.social-links h3 {
+  margin-bottom: 10px;
+}
+
+.contact-section .social-links > a {
+  display: block;
+  margin: 8px 0;
+  color: #e5be71;
 }
 
 .location-map iframe {
