@@ -55,6 +55,12 @@ interface GalleryItem {
   alt_text?: string | null
 }
 
+interface SocialMedia {
+  id: number
+  name: string
+  url: string
+}
+
 const { data: catalog } = await useFetch<CatalogResponse>(
   '/api/catalog/products',
   {
@@ -85,6 +91,9 @@ const gallery = computed(() =>
       }))
     : fallbackGallery
 )
+const { data: socialMedia } = await useFetch<SocialMedia[]>('/api/site/social-media', {
+  default: () => []
+})
 const config = useRuntimeConfig()
 const canonicalUrl = config.public.siteUrl.replace(/\/$/, '') + '/'
 
@@ -255,6 +264,34 @@ useHead({
           ></div
         ></section
       >
+
+      <section class="section social-preview-section" id="medsos">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <h2>Media Sosial</h2>
+              <p>Ikuti Creative untuk melihat karya dan informasi terbaru</p>
+            </div>
+            <a href="/medsos">Lihat Semua &rarr;</a>
+          </div>
+          <div v-if="socialMedia.length" class="social-preview-grid">
+            <a
+              v-for="item in socialMedia"
+              :key="item.id"
+              class="social-preview-card"
+              :href="item.url"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>{{ item.name }}</span>
+              <b>&nearr;</b>
+            </a>
+          </div>
+          <p v-else class="social-preview-empty">
+            Media sosial Creative akan segera tersedia.
+          </p>
+        </div>
+      </section>
 
       <section class="about-section" id="tentang"
         ><div class="container about-inner"

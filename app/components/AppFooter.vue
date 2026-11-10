@@ -59,6 +59,21 @@ function phoneUrl(phone: string) {
           Informasi kontak akan segera tersedia.
         </p>
       </div>
+      <div class="location-map">
+        <h3>Lokasi Creative Probolinggo</h3>
+        <iframe
+          src="https://www.google.com/maps?q=Creative%20Probolinggo&output=embed"
+          title="Peta lokasi Creative Probolinggo"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=Creative%20Probolinggo"
+          target="_blank"
+          rel="noopener"
+          >Buka di Google Maps ↗</a
+        >
+      </div>
     </div>
     <div class="container footer-copy">
       © {{ new Date().getFullYear() }} CREATIVE. Hak cipta dilindungi.
@@ -68,12 +83,13 @@ function phoneUrl(phone: string) {
 
 <style scoped>
 :global(.footer-grid) {
-  grid-template-columns: 1.65fr 0.8fr 1.2fr;
+  grid-template-columns: 1.65fr 0.8fr 1fr 1.35fr;
 }
 
-.contact-link {
-  display: grid;
-  gap: 3px;
+.contact-section .contact-link {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   margin: 0 0 13px;
 }
 
@@ -88,9 +104,29 @@ function phoneUrl(phone: string) {
   margin-top: 0;
 }
 
+.location-map iframe {
+  display: block;
+  width: 100%;
+  height: 155px;
+  border: 0;
+  border-radius: 7px;
+  background: #232527;
+}
+
+.location-map > a {
+  display: inline-block;
+  margin: 10px 0 0;
+  color: #e5be71;
+  font-weight: 700;
+}
+
 @media (max-width: 800px) {
   :global(.footer-grid) {
     grid-template-columns: 1fr;
+  }
+
+  .location-map iframe {
+    height: 210px;
   }
 }
 </style>
