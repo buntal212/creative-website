@@ -30,6 +30,11 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.css', '~/assets/css/brand.css'],
   routeRules: {
+    // Halaman medsos lama sudah dipindahkan ke footer; pertahankan URL lama
+    // agar crawler dan pengunjung tidak menemui halaman 404.
+    '/medsos': {
+      redirect: { to: '/#kontak', statusCode: 301 }
+    },
     '/api/**': {
       headers: { 'X-Robots-Tag': 'noindex, nofollow, noarchive' }
     },
