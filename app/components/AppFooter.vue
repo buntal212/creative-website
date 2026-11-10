@@ -118,8 +118,7 @@ function socialType(name: string) {
                 d="M13.8 10.2a4 4 0 0 0-5.7-.1l-2.3 2.3a4 4 0 1 0 5.7 5.7l1.3-1.3"
               />
             </svg>
-            <span>{{ item.name }}</span
-            ><b>↗</b>
+            <span>{{ item.name }}</span>
           </a>
         </div>
       </div>
@@ -182,10 +181,6 @@ function socialType(name: string) {
   gap: 8px;
   margin: 8px 0;
   color: #e5be71;
-}
-
-.contact-section .social-links > a b {
-  margin-left: auto;
 }
 
 .social-icon {
