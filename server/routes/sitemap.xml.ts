@@ -10,13 +10,17 @@ interface CatalogPage {
 }
 
 function escapeXml(value: string) {
-  return value.replace(/[<>&'\"]/g, (character) => ({
-    '<': '&lt;',
-    '>': '&gt;',
-    '&': '&amp;',
-    "'": '&apos;',
-    '"': '&quot;',
-  })[character] || character)
+  return value.replace(
+    /[<>&'\"]/g,
+    character =>
+      ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        "'": '&apos;',
+        '"': '&quot;'
+      })[character] || character
+  )
 }
 
 function lastModified(value?: string | null) {
@@ -25,7 +29,7 @@ function lastModified(value?: string | null) {
   return `<lastmod>${new Date(value).toISOString()}</lastmod>`
 }
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const config = useRuntimeConfig(event)
   const siteUrl = config.public.siteUrl.replace(/\/$/, '')
   const products: CatalogProduct[] = []
@@ -33,21 +37,34 @@ export default defineEventHandler(async (event) => {
   let lastPage = 1
 
   while (page <= lastPage) {
-    const response = await $fetch<CatalogPage>(`${config.creativeApiBase}/catalog/products`, {
-      query: { page, per_page: 100 },
-    })
+    const response = await $fetch<CatalogPage>(
+      `${config.creativeApiBase}/catalog/products`,
+      {
+        query: { page, per_page: 100 }
+      }
+    )
 
-    products.push(...response.data.filter((product) => typeof product.slug === 'string' && product.slug.length > 0))
+    products.push(
+      ...response.data.filter(
+        product => typeof product.slug === 'string' && product.slug.length > 0
+      )
+    )
     lastPage = Math.max(response.last_page || 1, 1)
     page += 1
   }
 
   const urls = new Map<string, string>()
-  urls.set(`${siteUrl}/`, '<changefreq>weekly</changefreq><priority>1.0</priority>')
+  urls.set(
+    `${siteUrl}/`,
+    '<changefreq>weekly</changefreq><priority>1.0</priority>'
+  )
 
   for (const product of products) {
     const location = `${siteUrl}/produk/${encodeURIComponent(product.slug)}`
-    urls.set(location, `${lastModified(product.updated_at)}<changefreq>weekly</changefreq><priority>0.8</priority>`)
+    urls.set(
+      location,
+      `${lastModified(product.updated_at)}<changefreq>weekly</changefreq><priority>0.8</priority>`
+    )
   }
 
   setResponseHeader(event, 'content-type', 'application/xml; charset=UTF-8')

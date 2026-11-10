@@ -3,7 +3,9 @@
 Copy folder `app`, `public`, and `nuxt.config.ts` into your existing Nuxt 4 project.
 
 ## Images required
+
 Place your own licensed product photographs in `public/images/` with these filenames:
+
 - hero-jersey.svg
 - jersey-black-gold.svg
 - jersey-red.svg
@@ -15,6 +17,7 @@ Place your own licensed product photographs in `public/images/` with these filen
 The supplied placeholders are illustrative SVG artwork, not product photos. Replace with real product photos for a faithful mockup.
 
 ## Run
+
 ```bash
 npm install
 npm run dev

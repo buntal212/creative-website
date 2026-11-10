@@ -15,12 +15,26 @@ const product = {
   stock: 12,
   updated_at: '2026-10-29T00:00:00.000000Z',
   category: { name: 'Jersey Futsal', slug: 'jersey-futsal' },
-  thumbnail: { id: 1, url: 'https://cdn.example.test/jersey-futsal-pro.jpg', alt_text: 'Jersey Futsal Pro', is_thumbnail: true },
-  images: [{ id: 1, url: 'https://cdn.example.test/jersey-futsal-pro.jpg', alt_text: 'Jersey Futsal Pro', is_thumbnail: true }],
+  thumbnail: {
+    id: 1,
+    url: 'https://cdn.example.test/jersey-futsal-pro.jpg',
+    alt_text: 'Jersey Futsal Pro',
+    is_thumbnail: true
+  },
+  images: [
+    {
+      id: 1,
+      url: 'https://cdn.example.test/jersey-futsal-pro.jpg',
+      alt_text: 'Jersey Futsal Pro',
+      is_thumbnail: true
+    }
+  ]
 }
 
 if (!existsSync(entry)) {
-  throw new Error('Artefak SSR tidak ditemukan. Jalankan npm run build terlebih dahulu.')
+  throw new Error(
+    'Artefak SSR tidak ditemukan. Jalankan npm run build terlebih dahulu.'
+  )
 }
 
 const apiServer = createServer((request, response) => {
@@ -33,7 +47,9 @@ const apiServer = createServer((request, response) => {
   }
 
   if (url.pathname === '/api/catalog/products') {
-    response.end(JSON.stringify({ data: [product], current_page: 1, last_page: 1 }))
+    response.end(
+      JSON.stringify({ data: [product], current_page: 1, last_page: 1 })
+    )
     return
   }
 
@@ -54,7 +70,7 @@ function listen(server, port) {
 }
 
 function close(server) {
-  return new Promise((resolve) => server.close(resolve))
+  return new Promise(resolve => server.close(resolve))
 }
 
 function runServer() {
@@ -66,13 +82,17 @@ function runServer() {
       NUXT_CREATIVE_API_BASE: `http://127.0.0.1:${apiPort}/api`,
       NUXT_PUBLIC_SITE_URL: 'https://creative-prob.my.id',
       HOST: '127.0.0.1',
-      PORT: String(sitePort),
+      PORT: String(sitePort)
     },
-    stdio: ['ignore', 'pipe', 'pipe'],
+    stdio: ['ignore', 'pipe', 'pipe']
   })
   let output = ''
-  child.stdout.on('data', (chunk) => { output += chunk })
-  child.stderr.on('data', (chunk) => { output += chunk })
+  child.stdout.on('data', chunk => {
+    output += chunk
+  })
+  child.stderr.on('data', chunk => {
+    output += chunk
+  })
   return { child, getOutput: () => output }
 }
 
@@ -103,7 +123,9 @@ function assertIncludes(value, expected, label) {
 
 function assertCanonical(value, url, label) {
   const escapedUrl = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const canonical = new RegExp(`<link(?=[^>]*\\brel="canonical")(?=[^>]*\\bhref="${escapedUrl}")`)
+  const canonical = new RegExp(
+    `<link(?=[^>]*\\brel="canonical")(?=[^>]*\\bhref="${escapedUrl}")`
+  )
 
   if (!canonical.test(value)) {
     throw new Error(`${label} tidak ditemukan: ${url}`)
@@ -125,45 +147,89 @@ await listen(apiServer, apiPort)
 const nuxt = runServer()
 
 try {
-  if (!await waitForServer(nuxt.child)) {
+  if (!(await waitForServer(nuxt.child))) {
     throw new Error(`Server SSR gagal berjalan: ${nuxt.getOutput()}`)
   }
 
   const robots = readFileSync('.output/public/robots.txt', 'utf8')
   assertIncludes(robots, 'Disallow: /api/', 'Robots API')
   assertIncludes(robots, 'Disallow: /admin/', 'Robots admin')
-  assertIncludes(robots, 'Sitemap: https://creative-prob.my.id/sitemap.xml', 'Lokasi sitemap')
+  assertIncludes(
+    robots,
+    'Sitemap: https://creative-prob.my.id/sitemap.xml',
+    'Lokasi sitemap'
+  )
 
-  const internalApi = await fetch(`http://127.0.0.1:${sitePort}/api/catalog/products`)
-  assertIncludes(internalApi.headers.get('x-robots-tag') || '', 'noindex', 'Header anti-indeks API')
+  const internalApi = await fetch(
+    `http://127.0.0.1:${sitePort}/api/catalog/products`
+  )
+  assertIncludes(
+    internalApi.headers.get('x-robots-tag') || '',
+    'noindex',
+    'Header anti-indeks API'
+  )
   const admin = await fetch(`http://127.0.0.1:${sitePort}/admin/`)
-  assertIncludes(admin.headers.get('x-robots-tag') || '', 'noindex', 'Header anti-indeks admin')
+  assertIncludes(
+    admin.headers.get('x-robots-tag') || '',
+    'noindex',
+    'Header anti-indeks admin'
+  )
 
   const sitemap = await responseText('/sitemap.xml')
   assertIncludes(sitemap.contentType, 'application/xml', 'Content-Type sitemap')
-  assertIncludes(sitemap.body, '<loc>https://creative-prob.my.id/</loc>', 'URL beranda sitemap')
-  assertIncludes(sitemap.body, '<loc>https://creative-prob.my.id/produk/jersey-futsal-pro</loc>', 'URL produk sitemap')
-  assertIncludes(sitemap.body, '<lastmod>2026-10-29T00:00:00.000Z</lastmod>', 'Lastmod produk sitemap')
+  assertIncludes(
+    sitemap.body,
+    '<loc>https://creative-prob.my.id/</loc>',
+    'URL beranda sitemap'
+  )
+  assertIncludes(
+    sitemap.body,
+    '<loc>https://creative-prob.my.id/produk/jersey-futsal-pro</loc>',
+    'URL produk sitemap'
+  )
+  assertIncludes(
+    sitemap.body,
+    '<lastmod>2026-10-29T00:00:00.000Z</lastmod>',
+    'Lastmod produk sitemap'
+  )
 
   const home = await responseText('/')
-  assertCanonical(home.body, 'https://creative-prob.my.id/', 'Canonical beranda')
-  assertIncludes(home.body, 'Jersey Custom Probolinggo | CREATIVE Custom Apparel', 'Title beranda')
-  assertIncludes(home.body, 'Jersey custom printing Probolinggo', 'Deskripsi SEO lokal beranda')
+  assertCanonical(
+    home.body,
+    'https://creative-prob.my.id/',
+    'Canonical beranda'
+  )
+  assertIncludes(
+    home.body,
+    'Jersey Custom Probolinggo | CREATIVE Custom Apparel',
+    'Title beranda'
+  )
+  assertIncludes(
+    home.body,
+    'Jersey custom printing Probolinggo',
+    'Deskripsi SEO lokal beranda'
+  )
   assertIncludes(home.body, '"LocalBusiness"', 'Structured data bisnis lokal')
   assertIncludes(home.body, '"Probolinggo"', 'Structured data Probolinggo')
 
   const detail = await responseText(`/produk/${product.slug}`)
-  assertCanonical(detail.body, `https://creative-prob.my.id/produk/${product.slug}`, 'Canonical produk')
+  assertCanonical(
+    detail.body,
+    `https://creative-prob.my.id/produk/${product.slug}`,
+    'Canonical produk'
+  )
   assertIncludes(detail.body, product.description, 'Konten SSR produk')
   assertIncludes(detail.body, '"@type":"Product"', 'Structured data Product')
   assertIncludes(detail.body, '"sku":"JFP-001"', 'SKU Product')
 
-  console.log('Sitemap, metadata canonical, SSR produk, dan structured data tervalidasi.')
+  console.log(
+    'Sitemap, metadata canonical, SSR produk, dan structured data tervalidasi.'
+  )
 } finally {
   nuxt.child.kill()
   await Promise.race([
-    new Promise((resolve) => nuxt.child.once('exit', resolve)),
-    delay(5_000),
+    new Promise(resolve => nuxt.child.once('exit', resolve)),
+    delay(5_000)
   ])
   await close(apiServer)
 }

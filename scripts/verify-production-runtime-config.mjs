@@ -10,28 +10,34 @@ const productionEnvironment = {
   NUXT_CREATIVE_API_BASE: 'https://api.creative-prob.my.id/api',
   NUXT_PUBLIC_SITE_URL: 'https://creative-prob.my.id',
   HOST: '127.0.0.1',
-  PORT: port,
+  PORT: port
 }
 
 if (!existsSync(entry)) {
-  throw new Error('Artefak SSR tidak ditemukan. Jalankan npm run build terlebih dahulu.')
+  throw new Error(
+    'Artefak SSR tidak ditemukan. Jalankan npm run build terlebih dahulu.'
+  )
 }
 
 function runServer(environment) {
   const child = spawn(process.execPath, [entry], {
     env: { ...process.env, ...environment },
-    stdio: ['ignore', 'pipe', 'pipe'],
+    stdio: ['ignore', 'pipe', 'pipe']
   })
   let output = ''
-  child.stdout.on('data', (chunk) => { output += chunk })
-  child.stderr.on('data', (chunk) => { output += chunk })
+  child.stdout.on('data', chunk => {
+    output += chunk
+  })
+  child.stderr.on('data', chunk => {
+    output += chunk
+  })
   return { child, getOutput: () => output }
 }
 
 async function waitForExit(child, timeout) {
   return await Promise.race([
-    new Promise((resolve) => child.once('exit', (code) => resolve(code))),
-    delay(timeout).then(() => null),
+    new Promise(resolve => child.once('exit', code => resolve(code))),
+    delay(timeout).then(() => null)
   ])
 }
 
@@ -60,22 +66,28 @@ valid.child.kill()
 await waitForExit(valid.child, 5_000)
 
 if (!started) {
-  throw new Error(`Server gagal berjalan dengan konfigurasi production: ${valid.getOutput()}`)
+  throw new Error(
+    `Server gagal berjalan dengan konfigurasi production: ${valid.getOutput()}`
+  )
 }
 
 const invalid = runServer({
   ...productionEnvironment,
-  NUXT_CREATIVE_API_BASE: 'http://127.0.0.1:8888/api',
+  NUXT_CREATIVE_API_BASE: 'http://127.0.0.1:8888/api'
 })
 const exitCode = await waitForExit(invalid.child, 10_000)
 
 if (exitCode === null) {
   invalid.child.kill()
-  throw new Error('Konfigurasi localhost pada production tidak ditolak saat runtime.')
+  throw new Error(
+    'Konfigurasi localhost pada production tidak ditolak saat runtime.'
+  )
 }
 
 if (exitCode === 0) {
-  throw new Error(`Server berhenti tanpa error untuk konfigurasi localhost: ${invalid.getOutput()}`)
+  throw new Error(
+    `Server berhenti tanpa error untuk konfigurasi localhost: ${invalid.getOutput()}`
+  )
 }
 
 console.log('Konfigurasi runtime production tervalidasi.')

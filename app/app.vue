@@ -13,26 +13,27 @@ useHead({
         '@id': `${siteUrl}/#organization`,
         name: 'CREATIVE Custom Apparel',
         url: siteUrl,
-        description: 'Jersey custom printing untuk tim, sekolah, komunitas, dan perusahaan di Probolinggo.',
+        description:
+          'Jersey custom printing untuk tim, sekolah, komunitas, dan perusahaan di Probolinggo.',
         areaServed: {
           '@type': 'City',
-          name: 'Probolinggo',
+          name: 'Probolinggo'
         },
         address: {
           '@type': 'PostalAddress',
           addressLocality: 'Probolinggo',
           addressRegion: 'Jawa Timur',
-          addressCountry: 'ID',
+          addressCountry: 'ID'
         },
         contactPoint: {
           '@type': 'ContactPoint',
           telephone: '+6282334148314',
           contactType: 'sales',
-          availableLanguage: 'Indonesian',
-        },
-      }),
-    },
-  ],
+          availableLanguage: 'Indonesian'
+        }
+      })
+    }
+  ]
 })
 </script>
 
